@@ -186,4 +186,26 @@ class JumpingBallLineView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : JumpingBallLineView) {
+
+        private val jbl : JumpingBallLine = JumpingBallLine(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            jbl.draw(canvas, paint)
+            animator.animate {
+                jbl.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            jbl.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
