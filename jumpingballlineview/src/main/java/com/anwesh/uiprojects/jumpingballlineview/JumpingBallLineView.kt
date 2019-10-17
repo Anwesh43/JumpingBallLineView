@@ -13,15 +13,16 @@ import android.app.Activity
 import android.content.Context
 
 val nodes : Int = 5
-val sizeFactor : Float = 2.9f
+val sizeFactor : Float = 2.5f
 val strokeFactor : Int = 90
 val delay : Long = 30
 val scGap : Float = 0.01f
 val foreColor : Int = Color.parseColor("#4CAF50")
 val backColor : Int = Color.parseColor("#BDBDBD")
 val maxDeg : Float = 180f
-val rFactor : Float = 4f
+val rFactor : Float = 2f
 val yOffsetFactor : Float = 0.4f
+val PIRADIAN : Double = Math.PI / maxDeg
 
 fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
@@ -29,16 +30,18 @@ fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale
 
 fun Canvas.drawJumpingBallLine(scale : Float, h : Float, size : Float, paint : Paint) {
     val r : Float = size / rFactor
-    val deg : Float = 180f * scale.divideScale(0, 2)
-    val y : Float = -(h - size) * Math.sin(deg * Math.PI / 180).toFloat()
-    val y1 : Float = h * scale.divideScale(1, 2)
+    val deg1 : Float = maxDeg * scale.divideScale(0, 2)
+    val deg2 : Float = maxDeg * scale.divideScale(1, 2)
+    val y : Float = -(h - 2 * r) * Math.sin(deg1 * PIRADIAN).toFloat()
+    val y1 : Float = h * Math.sin(deg2 * PIRADIAN).toFloat()
     save()
-    translate(0f, y)
+    translate(0f, y - r)
     drawCircle(0f, 0f, r, paint)
     restore()
+    drawLine(0f, 0f, 0f, y1, paint)
     save()
     translate(0f, y1)
-    drawLine(0f, -size, 0f, size, paint)
+    drawLine(-size, 0f, size, 0f, paint)
     restore()
 }
 
